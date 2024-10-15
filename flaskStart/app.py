@@ -1,24 +1,42 @@
-from flask import Flask, url_for
+from flask import Flask, url_for,render_template
 #자동으로 웹브라우저 켜지게하는 임포트
 import webbrowser
 import threading
 
-app = Flask(__name__)
+#템플릿폴더 경로 지정
+app = Flask(__name__, template_folder='flaskStart/templates')
+
 
 def open_browser():
     webbrowser.open_new('http://127.0.0.1:5000/')
+
+
+if __name__ == '__main__':
+    threading.Timer(1, open_browser).start()  # 서버 시작 후 1초 후에 브라우저가 실행됩니다.
+    app.run(debug=True)
+
+
+@app.route('/hello/<name>')
+def hello_name(name):
+    return render_template('hello.html',name=name)
+
+
+
 
 @app.route('/int/<int:var>')
 def int_type(var:int):
     return  f'Integer:{var}'
 
+
 @app.route('/float/<float:var>')
 def float_type(var:float):
     return  f'Float:{var}'
 
+
 @app.route('/path/<path:subpath>')
 def show_subpath(subpath):
     return  f'Subpath:{subpath}'
+
 
 @app.route('/uuid/<uuid:some_id>')
 def show_uuid(some_id):
@@ -72,6 +90,3 @@ def add(a:int,b:int)->int:
     return 1
 print(add("string",2))
 
-if __name__ == '__main__':
-    threading.Timer(1, open_browser).start()  # 서버 시작 후 1초 후에 브라우저가 실행됩니다.
-    app.run(debug=True)
